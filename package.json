@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "node --experimental-modules index.mjs"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/jackyho112/documenter/issues"
   },
-  "homepage": "https://github.com/jackyho112/documenter#readme"
+  "homepage": "https://github.com/jackyho112/documenter#readme",
+  "dependencies": {
+    "elasticsearch": "15.2.0",
+    "express": "4.16.4"
+  }
 }
