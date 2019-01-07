@@ -1,0 +1,19 @@
+{
+  "name": "documenter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jackyho112/documenter.git"
+  },
+  "author": "Jacky Ho <jackyho112dev@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jackyho112/documenter/issues"
+  },
+  "homepage": "https://github.com/jackyho112/documenter#readme"
+}
