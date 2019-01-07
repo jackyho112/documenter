@@ -2,6 +2,8 @@ import express from 'express';
 import elasticsearch from 'elasticsearch';
 import fs from 'fs';
 
+import verify from './src/verify';
+
 const app = express();
 
 const PORT = 5000;
@@ -11,7 +13,7 @@ const searchClient = new elasticsearch.Client({
     log: 'error'
  });
 
-client.ping({ requestTimeout: 30000 }, function(error) {
+searchClient.ping({ requestTimeout: 30000 }, function(error) {
     if (error) {
         console.error('elasticsearch cluster is down!');
     } else {
@@ -19,7 +21,7 @@ client.ping({ requestTimeout: 30000 }, function(error) {
     }
 });
 
-const buldIndex = function buldIndex(index, type, data) {
+function bulkIndex(index, type, data) {
   let bulkBody = [];
 
   data.forEach(item => {
@@ -34,7 +36,7 @@ const buldIndex = function buldIndex(index, type, data) {
     bulkBody.push(item);
   });
 
-  client.bulk({ body: bulkBody }).then(response => {
+  searchClient.bulk({ body: bulkBody }).then(response => {
     let errorCount = 0;
     response.items.forEach(item => {
       if (item.index && item.index.error) {
@@ -48,14 +50,21 @@ const buldIndex = function buldIndex(index, type, data) {
   }).catch(console.err);
 }
 
-async function indexData() {
-  const articlesRaw = await fs.readFileSync('./data.json');
+async function indexDataIfNoneFound() {
+  const { count } = await searchClient.count();
+
+  if (count > 0) {
+    return;
+  }
+
+  const articlesRaw = await fs.readFileSync('./src/sample_data.json');
   const articles = JSON.parse(articlesRaw);
   console.log(`${articles.length} items parsed from data file`);
   bulkIndex('library', 'article', articles);
 }
 
-indexData();
+indexDataIfNoneFound();
+verify();
 
 app.listen(PORT, function() {
   console.log('Server is running on PORT:', PORT);
