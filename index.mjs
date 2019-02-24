@@ -3,6 +3,8 @@ import elasticsearch from 'elasticsearch';
 import fs from 'fs';
 
 import verify from './src/verify';
+import searchData from './src/search';
+import searchTerm from './src/search_term';
 
 const app = express();
 
@@ -14,11 +16,11 @@ const searchClient = new elasticsearch.Client({
  });
 
 searchClient.ping({ requestTimeout: 30000 }, function(error) {
-    if (error) {
-        console.error('elasticsearch cluster is down!');
-    } else {
-        console.log('Everything is ok');
-    }
+  if (error) {
+    console.error('elasticsearch cluster is down!');
+  } else {
+    console.log('Everything is ok');
+  }
 });
 
 function bulkIndex(index, type, data) {
@@ -63,8 +65,10 @@ async function indexDataIfNoneFound() {
   bulkIndex('library', 'article', articles);
 }
 
-indexDataIfNoneFound();
-verify();
+// indexDataIfNoneFound();
+// verify();
+// searchData();
+searchTerm();
 
 app.listen(PORT, function() {
   console.log('Server is running on PORT:', PORT);

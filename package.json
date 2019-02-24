@@ -20,5 +20,8 @@
   "dependencies": {
     "elasticsearch": "15.2.0",
     "express": "4.16.4"
+  },
+  "engines": {
+    "node": ">=11.0.0"
   }
 }
