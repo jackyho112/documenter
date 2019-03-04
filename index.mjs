@@ -66,9 +66,9 @@ async function indexDataIfNoneFound() {
 }
 
 // indexDataIfNoneFound();
-// verify();
+verify();
 // searchData();
-searchTerm();
+// searchTerm();
 
 app.listen(PORT, function() {
   console.log('Server is running on PORT:', PORT);

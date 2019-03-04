@@ -11,18 +11,14 @@ function search({ index, body }) {
 
 export default function searchTerm() {
   const body = {
-    size: 4,
-    from: 0,
-    query: {
-      match: {
-        journal: 'Fir',
-        minimum_should_match: 2,
-        fuzziness: 2,
+    "query": {
+      "match": {
+        "journal": "Fir"
       }
     }
   };
 
-  console.log(`retrieving documents whose journal matches '${body.query.match.journal.query}' (displaying ${body.size} items at a time)...`);
+  console.log(`retrieving documents whose journal matches '${body.query.match.journal}' (displaying ${body.size} items at a time)...`);
   search('library', body).then(results => {
     console.log(`found ${results.hits.total} items in ${results.took}ms`);
     if (results.hits.total > 0) {
