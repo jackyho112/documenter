@@ -57,7 +57,8 @@ function bulkIndex(index, type, data) {
 async function indexDataIfNoneFound() {
   const { count } = await searchClient.count();
 
-  if (count > 5) {
+  // Bypass system indices
+  if (count > 100) {
     console.log(`${count} books already indexed!`);
     return;
   }
