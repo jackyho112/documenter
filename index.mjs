@@ -1,6 +1,7 @@
 import express from 'express';
 import elasticsearch from 'elasticsearch';
 import fs from 'fs';
+import _ from 'lodash';
 
 import verify from './src/verify';
 import searchData from './src/search';
@@ -31,20 +32,21 @@ function bulkIndex(index, type, data) {
       index: {
         _index: index,
         _type: type,
-        _id: item.id
       }
     });
 
-    bulkBody.push(item);
+    bulkBody.push(_.omit(item, ['_id']));
   });
 
   searchClient.bulk({ body: bulkBody }).then(response => {
     let errorCount = 0;
+
     response.items.forEach(item => {
       if (item.index && item.index.error) {
         console.log(++errorCount, item.index.error);
       }
     });
+
     console.log(
       `Successfully indexed ${data.length - errorCount}
       out of ${data.length} items`
@@ -55,20 +57,19 @@ function bulkIndex(index, type, data) {
 async function indexDataIfNoneFound() {
   const { count } = await searchClient.count();
 
-  if (count > 0) {
+  if (count > 5) {
+    console.log(`${count} books already indexed!`);
     return;
   }
 
-  const articlesRaw = await fs.readFileSync('./src/sample_data.json');
-  const articles = JSON.parse(articlesRaw);
-  console.log(`${articles.length} items parsed from data file`);
-  bulkIndex('library', 'article', articles);
+  const booksRaw = await fs.readFileSync('./src/sample_data.json');
+  const books = JSON.parse(booksRaw);
+  console.log(`${books.length} items parsed from data file`);
+  bulkIndex('catalog', 'book', books);
 }
 
-// indexDataIfNoneFound();
+indexDataIfNoneFound();
 verify();
-// searchData();
-// searchTerm();
 
 app.listen(PORT, function() {
   console.log('Server is running on PORT:', PORT);
