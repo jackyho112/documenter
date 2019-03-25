@@ -5,24 +5,25 @@ const client = new elasticsearch.Client({
   log: 'error',
 });
 
-function search(index, body) {
+function clientSearch(index, body) {
   return client.search({ index, body });
 }
 
-export default function searchData() {
+export default function search(text) {
   const body = {
-    size: 4,
-    from: 0,
-    query: {
-      match_all: {}
+    "query": {
+      "more_like_this": {
+        "fields": [
+          "title",
+          "shortDescription",
+          "longDescription",
+          "authors",
+          "categories"
+        ],
+        "like": text
+      }
     }
-  };
+  }
 
-  search('library', body).then(results => {
-    console.log(`found ${results.hits.total} items in ${results.took}ms`);
-    console.log('returned journals:');
-    results.hits.hits.forEach((hit, index) => console.log(
-      hit._source.journal
-    ));
-  }).catch(console.error);
+  return clientSearch('catalog', body).catch(console.error);
 };

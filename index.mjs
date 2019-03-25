@@ -4,8 +4,7 @@ import fs from 'fs';
 import _ from 'lodash';
 
 import verify from './src/verify';
-import searchData from './src/search';
-import searchTerm from './src/search_term';
+import search from './src/search';
 
 const app = express();
 
@@ -74,4 +73,8 @@ verify();
 
 app.listen(PORT, function() {
   console.log('Server is running on PORT:', PORT);
+});
+
+app.get('/search', function(req, res) {
+  search(req.query.text).then(result => res.json(result));
 });
